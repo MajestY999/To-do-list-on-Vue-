@@ -1,9 +1,14 @@
 <template>
   <v-container class="mt-5" max-width="600">
     <v-card class="pa-5" elevation="3">
-      <v-card-title class="text-h4 text-center mb-4">{{ $t('home') }}</v-card-title>
+      <v-card-title class="text-h4 text-center mb-4">{{
+        $t("home")
+      }}</v-card-title>
 
-      <v-form @submit.prevent="submitTodo" class="d-flex align-center gap-2 mb-4">
+      <v-form
+        @submit.prevent="submitTodo"
+        class="d-flex align-center gap-2 mb-4"
+      >
         <v-text-field
           v-model.trim="newTodoText"
           :label="$t('inputPlaceholder')"
@@ -12,28 +17,27 @@
           hide-details
           class="flex-grow-1"
         ></v-text-field>
-        
-        <v-btn 
-          type="submit" 
-          color="primary" 
+
+        <v-btn
+          type="submit"
+          color="primary"
           height="48"
           :disabled="!newTodoText"
           elevation="1"
         >
-          {{ $t('addButton') }}
+          {{ $t("addButton") }}
         </v-btn>
       </v-form>
 
-      <v-list v-if="todos.length > 0" lines="one">
-        <v-list-item 
-          v-for="todo in todos" 
-          :key="todo.id"
-          class="border-bottom py-2 px-0"
-        >
+      <div v-if="todos.length > 0" class="todo-list-container">
+        <TodoCard v-for="todo in todos" :key="todo.id">
           <div class="d-flex align-center w-100 task-row">
-            
             <v-btn
-              :icon="todo.completed ? 'mdi-checkbox-marked' : 'mdi-checkbox-blank-outline'"
+              :icon="
+                todo.completed
+                  ? 'mdi-checkbox-marked'
+                  : 'mdi-checkbox-blank-outline'
+              "
               variant="flat"
               color="white"
               :class="todo.completed ? 'check-btn-active' : 'check-btn-empty'"
@@ -42,71 +46,80 @@
               @click="toggleTodoStatus(todo.id)"
             ></v-btn>
 
-            <span :class="{ 'completed-task': todo.completed }" class="text-body-1 flex-grow-1 task-text">
+            <span
+              :class="{ 'completed-task': todo.completed }"
+              class="text-body-1 flex-grow-1 task-text"
+            >
               {{ todo.text }}
             </span>
 
-            <v-btn 
-              icon="mdi-delete-forever" 
-              variant="flat" 
+            <v-btn
+              icon="mdi-delete-forever"
+              variant="flat"
               color="white"
               size="small"
               class="ml-2 delete-btn-right"
               @click="deleteTodo(todo.id)"
             ></v-btn>
-
           </div>
-        </v-list-item>
-      </v-list>
+        </TodoCard>
+      </div>
 
       <v-card-text v-else class="text-center text-grey text-body-1 py-4">
-        {{ $t('emptyList') }}
+        {{ $t("emptyList") }}
       </v-card-text>
     </v-card>
   </v-container>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
-import { useStore } from 'vuex'
+import { ref, computed } from "vue";
+import { useStore } from "vuex";
+import TodoCard from "@/components/TodoCard.vue";
 
-const store = useStore()
-const newTodoText = ref('')
+const store = useStore();
+const newTodoText = ref("");
 
-const todos = computed(() => store.getters.allTodos)
+const todos = computed(() => store.getters.allTodos);
 
 const submitTodo = () => {
-  if (!newTodoText.value) return
-  store.dispatch('addTodo', newTodoText.value)
-  newTodoText.value = ''
-}
+  if (!newTodoText.value) return;
+  store.dispatch("addTodo", newTodoText.value);
+  newTodoText.value = "";
+};
 
 const toggleTodoStatus = (id) => {
-  store.dispatch('toggleTodo', id)
-}
+  store.dispatch("toggleTodo", id);
+};
 
 const deleteTodo = (id) => {
-  store.dispatch('removeTodo', id)
-}
+  store.dispatch("removeTodo", id);
+};
 </script>
 
 <style scoped>
 .gap-2 {
   gap: 8px;
 }
-.border-bottom {
-  border-bottom: 1px solid #e0e0e0;
+.todo-list-container {
+  margin-top: 15px;
 }
 .task-row {
   min-height: 48px;
 }
 
+
+.task-text {
+  color: #000000 !important;
+  font-weight: 500;
+}
+
 .status-btn {
   border: 1px solid #b0bec5 !important;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
 }
 .check-btn-empty {
-  color: #2e7d32 !important; 
+  color: #2e7d32 !important;
 }
 .check-btn-active {
   color: #4caf50 !important;
@@ -117,7 +130,7 @@ const deleteTodo = (id) => {
   color: #1867c0 !important;
   border: 1px solid #b0bec5 !important;
   background-color: #ffffff !important;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
 }
 .delete-btn-right:hover {
   background-color: #f5f5f7 !important;
