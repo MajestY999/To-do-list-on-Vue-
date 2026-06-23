@@ -4,12 +4,12 @@
       <v-list density="compact" nav>
         <v-list-item
           prepend-icon="mdi-format-list-checks"
-          title="Список дел"
+          :title="$t('home')"
           to="/"
         ></v-list-item>
         <v-list-item
           prepend-icon="mdi-information"
-          title="О программе"
+          :title="$t('about')"
           to="/about"
         ></v-list-item>
       </v-list>
@@ -17,7 +17,14 @@
 
     <v-app-bar color="primary">
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-app-bar-title>Мой Менеджер Задач</v-app-bar-title>
+
+      <v-app-bar-title>{{ $t("title") }}</v-app-bar-title>
+
+      <v-spacer></v-spacer>
+
+      <v-btn variant="outlined" class="mr-4" @click="toggleLanguage">
+        {{ locale === "ru" ? "EN" : "RU" }}
+      </v-btn>
     </v-app-bar>
 
     <v-main class="bg-grey-lighten-3">
@@ -28,6 +35,15 @@
 
 <script setup>
 import { ref } from "vue";
+import { useI18n } from "vue-i18n";
 
 const drawer = ref(true);
+
+
+const { locale } = useI18n();
+
+
+const toggleLanguage = () => {
+  locale.value = locale.value === "ru" ? "en" : "ru";
+};
 </script>

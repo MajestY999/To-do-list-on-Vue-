@@ -1,11 +1,14 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-import router from './router' 
+import router from './router'
+import store from './store'
+import i18n from './i18n' 
 
 import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
+import '@mdi/font/css/materialdesignicons.css' 
 
 const vuetify = createVuetify({
   components,
@@ -14,7 +17,9 @@ const vuetify = createVuetify({
 
 const app = createApp(App)
 
-app.use(router)  
-app.use(vuetify) 
+app.use(router)
+app.use(store)
+app.use(i18n) 
+app.use(vuetify)
 
 app.mount('#app')

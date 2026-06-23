@@ -1,0 +1,10 @@
+{
+  "title": "Мой Менеджер Задач",
+  "home": "Список дел",
+  "about": "О программе",
+  "inputPlaceholder": "Что нужно сделать?",
+  "addButton": "Добавить",
+  "emptyList": "Список дел пуст. Отдыхай!",
+  "aboutTitle": "О проекте",
+  "aboutText": "Продвинутый список дел, созданный на Vue 3, Vuetify, Vue Router, Vuex и Vue-i18n."
+}

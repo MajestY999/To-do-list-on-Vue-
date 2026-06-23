@@ -1,0 +1,10 @@
+{
+  "title": "My Todo Manager",
+  "home": "Todo List",
+  "about": "About Program",
+  "inputPlaceholder": "What needs to be done?",
+  "addButton": "Add",
+  "emptyList": "Todo list is empty. Enjoy your time!",
+  "aboutTitle": "About Project",
+  "aboutText": "Advanced todo list built with Vue 3, Vuetify, Vue Router, Vuex, and Vue-i18n."
+}
