@@ -1,76 +1,79 @@
 <template>
-  <v-app>
-    <v-main class="bg-grey-lighten-4">
-      <v-container>
-        <v-row justify="center" class="mt-10">
-          <v-col cols="12" sm="8" md="6">
-            
-            <v-card class="pa-6" elevation="2">
-              <v-card-title class="text-center text-h5 mb-4">Список дел</v-card-title>
+  <div class="todo-app">
+    <header class="app-header">
+      <h1>Список дел</h1>
+      <p class="subtitle">Учебный проект на Vue 3</p>
+    </header>
 
-              <div class="d-flex gap-2 mb-4">
-                <v-text-field
-                  v-model.trim="newTodoText"
-                  label="Что нужно сделать?"
-                  variant="outlined"
-                  hide-details
-                  @keyup.enter="addTodo"
-                ></v-text-field>
-                
-                <v-btn 
-                  color="primary" 
-                  height="56"
-                  @click="addTodo"
-                >
-                  Добавить
-                </v-btn>
-              </div>
+    <form @submit.prevent="addTodo" class="todo-form">
+      <input 
+        v-model.trim="newTodoText" 
+        type="text" 
+        placeholder="Что нужно сделать?" 
+      />
+      <button type="submit" :disabled="!newTodoText">Добавить</button>
+    </form>
 
-              <v-list>
-                <v-list-item v-for="todo in filteredTodos" :key="todo.id" border class="mb-2">
-                  <template #prepend>
-                    <v-checkbox-btn v-model="todo.completed"></v-checkbox-btn>
-                  </template>
-                  
-                  <v-list-item-title :class="{ 'text-decoration-line-through text-grey': todo.completed }">
-                    {{ todo.text }}
-                  </v-list-item-title>
+    <div class="todo-filters" v-if="todos.length > 0">
+      <button 
+        @click="filter = 'all'" 
+        :class="{ active: filter === 'all' }"
+      >Все ({{ todos.length }})</button>
+      <button 
+        @click="filter = 'active'" 
+        :class="{ active: filter === 'active' }"
+      >Активные</button>
+      <button 
+        @click="filter = 'completed'" 
+        :class="{ active: filter === 'completed' }"
+      >Завершенные</button>
+    </div>
 
-                  <template #append>
-                    <v-btn icon="mdi-delete" variant="text" color="error" @click="removeTodo(todo.id)"></v-btn>
-                  </template>
-                </v-list-item>
-              </v-list>
+    <ul class="todo-list">
+      <li 
+        v-for="todo in filteredTodos" 
+        :key="todo.id" 
+        :class="{ completed: todo.completed }"
+      >
+        <label class="todo-item-label">
+          <input 
+            type="checkbox" 
+            v-model="todo.completed"
+          />
+          <span class="todo-text">{{ todo.text }}</span>
+        </label>
+        <button @click="removeTodo(todo.id)" class="delete-btn">&times;</button>
+      </li>
+    </ul>
 
-              <div v-if="filteredTodos.length === 0" class="text-center text-grey mt-4">
-                {{ emptyMessage }}
-              </div>
-
-            </v-card>
-
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-main>
-  </v-app>
+    <p v-if="filteredTodos.length === 0" class="empty-state">
+      {{ emptyMessage }}
+    </p>
+  </div>
 </template>
 
 <script>
 import { ref, computed, watch } from 'vue';
+// Подключаем стили напрямую из корня src
+import './assets/styles.css';
 
 export default {
   name: 'App',
   setup() {
-    // Временно жестко прописываем массив, игнорируя localStorage
-    const todos = ref([
-      { id: 1, text: 'Убраться дома', completed: false },
-      { id: 2, text: 'Закинуть проект на GitHub', completed: false }
+    // Чистый ключ для localStorage без лишних названий
+    const savedTodos = localStorage.getItem('my-todo-tasks');
+    
+    const todos = ref(savedTodos ? JSON.parse(savedTodos) : [
+      { id: 1, text: 'Изучить синтаксис Vue 3', completed: true },
+      { id: 2, text: 'Залить рабочий проект на GitHub', completed: false }
     ]);
 
     const newTodoText = ref('');
     const filter = ref('all');
 
-    
+    watch(todos, (newVal) => {
+      localStorage.setItem('my-todo-tasks', JSON.stringify(newVal));
+    }, { deep: true });
 
     const addTodo = () => {
       if (!newTodoText.value) return;
@@ -87,8 +90,12 @@ export default {
     };
 
     const filteredTodos = computed(() => {
-      if (filter.value === 'active') return todos.value.filter(todo => !todo.completed);
-      if (filter.value === 'completed') return todos.value.filter(todo => todo.completed);
+      if (filter.value === 'active') {
+        return todos.value.filter(todo => !todo.completed);
+      }
+      if (filter.value === 'completed') {
+        return todos.value.filter(todo => todo.completed);
+      }
       return todos.value;
     });
 
@@ -107,6 +114,6 @@ export default {
       addTodo,
       removeTodo
     };
-  }}
+  }
+};
 </script>
-
